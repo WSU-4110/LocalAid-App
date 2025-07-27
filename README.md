@@ -1,53 +1,76 @@
-# LocalAid – Community Help Web App
+#  LocalAid – Community Help Web App
 
-## 🧪 Sprint 1 Demo – Static Web Prototype
-
-This is a static website demo for the LocalAid project — a community-driven help platform that lets users post or respond to help requests in their neighborhood. This demo focuses on front-end design and layout.
+_LocalAid is a community-driven web application designed to connect residents in local neighborhoods with one another through requests for help, support, and services._
 
 ---
 
-## 👥 Team Contributions
+##  Project Overview
 
-- **Ariful Islam** – Frontend Developer  
-  ➤ Created all HTML & CSS files for this demo, including layout for login, registration, and request submission pages.
-
-- **Michelle Williams** – GitHub Manager & Documentation  
-  ➤ Uploaded project files to GitHub, organized commit structure, documented team roles, managed project readme, will begin contributing to SQL database integration.
-
-- **Hisham Issa** – Backend Developer (Starting Sprint 2)  
-  ➤ Will implement Flask-based backend and user authentication.
-
-- **Bryan Akani** – Database Developer (Starting Sprint 2)  
-  ➤ Will design and integrate SQL schema for tracking users and help requests.
+LocalAid allows users to:
+- Create accounts and log in securely
+- Post and manage help requests (e.g., transportation, food sharing, home repairs)
+- Respond to other users' requests in the spirit of community aid
+- Foster stronger, connected neighborhoods through technology
 
 ---
 
-## 📂 Folder Structure
+##  Tech Stack
 
-/css → CSS files for styling
-/index.html → Landing page
-/login.html → Login form
-/post_request.html → Help request submission form
-/images/ → Images used in UI (if applicable)
-
-
----
-
-## ✅ What's Included
-
-- Responsive HTML structure for key pages
-- Basic styling using custom CSS
-- Placeholder forms for login and posting help requests
-- Ready to integrate Flask & SQL in Sprint 2
+| Area        | Tools & Frameworks       |
+|-------------|--------------------------|
+| Frontend    | HTML, CSS, Bootstrap 5, JavaScript |
+| Backend     | Python, Flask            |
+| Database    | MySQL                    |
+| Hosting/Version Control | GitHub       |
 
 ---
 
-## 📆 Presentation Milestone
-- **Sprint 1 Demo:** June 10, 2025
+##  Key Features
+
+- Responsive homepage with user-friendly UI
+- Secure user registration & login system
+- Request and reply features for neighbors
+- Custom logo and branding
+- Database integration for persistent data
+- Modular codebase organized by frontend/backend
 
 ---
 
-## 📌 Next Steps
-- Set up Flask routing and templates
-- Add database tables for users and requests
-- Enable user registration and request posting
+##  Team Members & Roles
+
+| Member    | Role                                  |
+|-----------|----------------------------------------|
+| Michelle  | Users table & login DB setup, GitHub/wiki, presentations |
+| Bryan     | Posts/replies database schema & integration |
+| Hisham    | Backend implementation & GitHub merging |
+| Ariful    | Homepage design & frontend enhancements |
+
+---
+
+##  Development Status
+
+ Basic functionality implemented  
+ UI improvements and feature merging in progress  
+ Known merge conflicts and display issues being resolved
+
+---
+
+##  GitHub Contributions
+
+All commits are documented by each contributor or Michelle under separate branches. Multiple pull requests have been made and merged to ensure active participation and collaboration across sprints.
+
+---
+## Contact
+For questions, please contact the team via GitHub Issues
+
+##  Repository Structure
+
+```bash
+LocalAid/
+│
+├── static/              # CSS, JS, images
+├── templates/           # HTML templates
+├── app.py               # Main Flask application
+├── db/                  # SQL scripts, database logic
+├── README.md
+└── requirements.txt     # Project dependencies
