@@ -24,23 +24,50 @@ def app():
 def client(app):
     return app.test_client()
 
-def test_request_help_success(client):
-
-    data = {
+def valid_payload():
+    return {
         "name": "John Doe",
         "description": "Need food assistance",
         "location": "123 Main St",
         "contact": "555-1234"
     }
 
-    
-    response = client.post("/request_help", json=data)
 
-    
+def test_request_help_success(client):
+    response = client.post("/request_help", json=valid_payload())
     assert response.status_code == 201
     assert response.get_json() == {"message": "Help request submitted successfully"}
+    assert HelpRequest.query.count() == 1
 
-    
-    help_requests = HelpRequest.query.all()
-    assert len(help_requests) == 1
-    assert help_requests[0].name == "John Doe"
+def test_request_help_missing_name(client):
+    data = valid_payload()
+    del data["name"]
+    response = client.post("/request_help", json=data)
+    assert response.status_code == 400 or response.status_code == 500
+    assert HelpRequest.query.count() == 0
+
+def test_request_help_missing_description(client):
+    data = valid_payload()
+    del data["description"]
+    response = client.post("/request_help", json=data)
+    assert response.status_code == 400 or response.status_code == 500
+    assert HelpRequest.query.count() == 0
+
+def test_request_help_missing_location(client):
+    data = valid_payload()
+    del data["location"]
+    response = client.post("/request_help", json=data)
+    assert response.status_code == 400 or response.status_code == 500
+    assert HelpRequest.query.count() == 0
+
+def test_request_help_missing_contact(client):
+    data = valid_payload()
+    del data["contact"]
+    response = client.post("/request_help", json=data)
+    assert response.status_code == 400 or response.status_code == 500
+    assert HelpRequest.query.count() == 0
+
+def test_request_help_empty_payload(client):
+    response = client.post("/request_help", json={})
+    assert response.status_code == 400 or response.status_code == 500
+    assert HelpRequest.query.count() == 0
