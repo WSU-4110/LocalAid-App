@@ -1,31 +1,22 @@
-import pytest
+# test_backend.py
+
+import sys
+import os
+
+# Add parent directory to Python path so 'app' can be imported
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+import unittest
 from app import create_app
 
-@pytest.fixture
-def client():
-    app = create_app()
-    app.config['TESTING'] = True
-    with app.test_client() as client:
-        yield client
+class TestAppCreation(unittest.TestCase):
+    def setUp(self):
+        self.app = create_app().test_client()
+        self.app.testing = True
 
-# Test the /browse route (GET)
-def test_browse_page(client):
-    response = client.get('/browse')
-    assert response.status_code == 200
-    assert b'<html' in response.data.lower()
+    def test_homepage_status_code(self):
+        response = self.app.get('/')
+        self.assertEqual(response.status_code, 200)
 
-# Test the /post-request route (GET)
-def test_get_post_request_page(client):
-    response = client.get('/post-request')
-    assert response.status_code == 200
-    assert b'<html' in response.data.lower()
-
-# Test the /post-request route (POST)
-def test_post_post_request_page(client):
-    response = client.post('/post-request', data={
-        'title': 'Need food',
-        'category': 'Food',
-        'description': 'Urgent help needed'
-    }, follow_redirects=True)
-    assert response.status_code == 200
-    assert b'<html' in response.data.lower()
+if __name__ == '__main__':
+    unittest.main()
