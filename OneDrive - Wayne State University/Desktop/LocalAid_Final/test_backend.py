@@ -1,12 +1,11 @@
-# test_backend.py
-
-import sys
-import os
-
-# Add parent directory to Python path so 'app' can be imported
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import unittest
+import os
+import sys
+
+# Add the path to the repo root so that 'app' can be imported
+repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, repo_root)
+
 from app import create_app
 
 class TestAppCreation(unittest.TestCase):
