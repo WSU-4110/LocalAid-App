@@ -1,73 +1,49 @@
+
 import pytest
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from routes.api import api_routes
-from models import db, HelpRequest
+from requests import bp  # Replace 'your_module' with the actual Python filename (without .py)
 
 @pytest.fixture
 def app():
     app = Flask(__name__)
-    app.config['TESTING'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-    db.init_app(app)
-    app.register_blueprint(api_routes)
-
-    with app.app_context():
-        db.create_all()
-        yield app
-        db.session.remove()
-        db.drop_all()
+    app.secret_key = 'test'  # Needed for flashing messages
+    app.register_blueprint(bp)
+    return app
 
 @pytest.fixture
 def client(app):
     return app.test_client()
 
-def valid_payload():
-    return {
-        "name": "John Doe",
-        "description": "Need food assistance",
-        "location": "123 Main St",
-        "contact": "555-1234"
-    }
+# 1. Test GET /browse returns 200
+def test_browse_route_status_code(client):
+    response = client.get('/browse')
+    assert response.status_code == 200
 
+# 2. Test GET /browse returns correct template content (optional)
+def test_browse_route_content(client):
+    response = client.get('/browse')
+    assert b'browse' in response.data.lower()  # crude check (adjust if needed)
 
-def test_request_help_success(client):
-    response = client.post("/request_help", json=valid_payload())
-    assert response.status_code == 201
-    assert response.get_json() == {"message": "Help request submitted successfully"}
-    assert HelpRequest.query.count() == 1
+# 3. Test GET /post-request returns 200
+def test_get_post_request_page(client):
+    response = client.get('/post-request')
+    assert response.status_code == 200
 
-def test_request_help_missing_name(client):
-    data = valid_payload()
-    del data["name"]
-    response = client.post("/request_help", json=data)
-    assert response.status_code == 400 or response.status_code == 500
-    assert HelpRequest.query.count() == 0
+# 4. Test POST /post-request redirects to /browse
+def test_post_request_redirect(client):
+    response = client.post('/post-request', data={}, follow_redirects=False)
+    assert response.status_code == 302  # Redirect
+    assert '/browse' in response.headers['Location']
 
-def test_request_help_missing_description(client):
-    data = valid_payload()
-    del data["description"]
-    response = client.post("/request_help", json=data)
-    assert response.status_code == 400 or response.status_code == 500
-    assert HelpRequest.query.count() == 0
+# 5. Test POST /post-request sets flash message
+def test_post_request_flash_message(client):
+    with client.session_transaction() as sess:
+        sess['_flashes'] = []
 
-def test_request_help_missing_location(client):
-    data = valid_payload()
-    del data["location"]
-    response = client.post("/request_help", json=data)
-    assert response.status_code == 400 or response.status_code == 500
-    assert HelpRequest.query.count() == 0
+    response = client.post('/post-request', data={}, follow_redirects=True)
+    assert b'Your request has been posted!' in response.data
 
-def test_request_help_missing_contact(client):
-    data = valid_payload()
-    del data["contact"]
-    response = client.post("/request_help", json=data)
-    assert response.status_code == 400 or response.status_code == 500
-    assert HelpRequest.query.count() == 0
-
-def test_request_help_empty_payload(client):
-    response = client.post("/request_help", json={})
-    assert response.status_code == 400 or response.status_code == 500
-    assert HelpRequest.query.count() == 0
+# 6. Test POST method logic only triggers on POST, not GET
+def test_post_request_does_not_flash_on_get(client):
+    response = client.get('/post-request')
+    assert b'Your request has been posted!' not in response.data
